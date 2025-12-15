@@ -324,3 +324,22 @@ const refreshResponse = await fetch('/api/auth/refresh/', {
 - `REFRESH_TOKEN_COOKIE_SECURE = True` — HTTPS only (in production)
 - `REFRESH_TOKEN_COOKIE_SAMESITE = 'Lax'` — CSRF protection
 - `REFRESH_TOKEN_COOKIE_PATH = '/api/auth/'` — Minimize exposure
+
+## Admin Interface Security Notes
+
+The Django admin interface is intentionally kept separate from the JWT-based authentication system.
+
+In real-world production environments, administrative access should NOT rely only on application-level authentication. Instead, it should be protected using network and infrastructure controls such as:
+
+- IP allowlists (office IPs, jump hosts)
+- VPN or Zero Trust access
+- Private network exposure (not public internet)
+- Reverse proxy restrictions (Nginx, Cloud load balancers)
+- Strong MFA at the identity provider level
+
+For this reason:
+- Admin login events are not tracked by the JWT audit system
+- Brute-force protection for admin access is expected to be handled at the network or identity layer
+- This project focuses on securing user-facing authentication flows
+
+This separation reflects real-world security architecture and defense-in-depth principles.
